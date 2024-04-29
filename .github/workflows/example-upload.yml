@@ -1,0 +1,55 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Runs a set of commands using the runners shell
+      - name: FOSSA CLI
+        run: |
+
+          curl --location --request PUT 'https://app.fossa.com/api/projects/<project-locator>' \
+          --header 'Authorization: Bearer <fossa-full-access-token>' \
+          --header 'Content-Type: application/x-www-form-urlencoded' \
+          --data-urlencode 'bom_column_settings[]=Authors' \
+          --data-urlencode 'bom_column_settings[]=Library' \
+          --data-urlencode 'bom_column_settings[]=DependencyPaths'
+
+      - uses: jfrog/setup-jfrog-cli@v4
+        env:
+            # JFrog platform url (for example: https://acme.jfrog.io)
+            JF_URL: ${{ secrets.JF_URL }}
+      
+            # Basic authentication credentials
+            JF_USER: ${{ secrets.JF_USER }}
+            JF_PASSWORD: ${{ secrets.JF_PASSWORD }}
+      
+            # JFrog platform access token (if JF_USER and JF_PASSWORD are not provided)
+            # JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+      
+            # Same can be achieved with a Config Token using JF_ENV_1 environment variable
+            # JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
+        with:
+            download-repository: jfrog-cli-remote
+            
