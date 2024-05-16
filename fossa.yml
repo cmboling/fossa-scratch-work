@@ -1,0 +1,35 @@
+name: FOSSA Composite Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run Maven workflow if Maven project
+        if: -f pom.xml
+        uses: ./.github/workflows/maven.yml
+
+      - name: Run Node.js workflow if Node.js project
+        if: -f package.json
+        uses: ./.github/workflows/nodejs.yml
+
+      - name: Install FOSSA CLI
+        run: |
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
+
+        - name: Check FOSSA CLI Version
+          run: fossa -V
+
+        - name: Run Analysis (in debug mode) (and output mode)
+          run: |
+              fossa analyze -o --debug
