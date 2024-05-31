@@ -32,8 +32,7 @@ def create_fossa_deps(lib_paths, inc_paths, output_path):
         dependency_name = path.split('/')[-1]
         vendored_dependencies.append({
             'name': dependency_name,
-            'path': path,
-            'version': 'unknown'  # Version info is not available in the Makefile
+            'path': path
         })
 
     fossa_deps = {'vendored-dependencies': vendored_dependencies}
