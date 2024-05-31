@@ -1,0 +1,9 @@
+vendored-dependencies:
+- name: lib1
+  path: /usr/local/lib
+- name: lib2
+  path: /opt/lib
+- name: include1
+  path: /usr/local/include
+- name: include2
+  path: /opt/include
